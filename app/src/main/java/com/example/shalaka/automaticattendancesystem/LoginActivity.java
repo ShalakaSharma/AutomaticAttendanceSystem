@@ -19,8 +19,11 @@ import android.widget.TimePicker;
 import android.widget.Toast;
 
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
+
+import java.io.IOException;
 
 /**
  * A login screen that offers login via email/password.
@@ -147,28 +150,33 @@ public class LoginActivity extends AppCompatActivity {
     private class HttpRequestTask extends AsyncTask<String, Object, Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
+            boolean response = false;
+            String url = null;
             try {
-                final String url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/add";
-
-                UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                        .queryParam("first_name", params[0])
-                        .queryParam("IMEI", params[5])
-                        .queryParam("Android_ID", params[6])
-                        .queryParam("Student_ID", params[4])
-                        .queryParam("last_name", params[1])
-                        .queryParam("email", params[2])
-                        .queryParam("course_ID", params[3]);
-                RestTemplate restTemplate = new RestTemplate();
-                restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
-                return restTemplate.getForObject(
-                        builder.build().encode().toUri(),
-                        Boolean.class);
-            } catch (Exception e) {
-                Log.e("MainActivity", e.getMessage(), e);
+                url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/add";
+            } catch (IOException e) {
+                e.printStackTrace();
             }
 
-            return null;
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                    .queryParam("first_name", params[0])
+                    .queryParam("IMEI", params[5])
+                    .queryParam("Android_ID", params[6])
+                    .queryParam("Student_ID", params[4])
+                    .queryParam("last_name", params[1])
+                    .queryParam("email", params[2])
+                    .queryParam("course_ID", params[3]);
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+            try {
+                response = restTemplate.getForObject(
+                        builder.build().encode().toUri(),
+                        Boolean.class);
+            } catch (RestClientException e) {
+                Log.e("MainActivity", e.getMessage(), e);
+            }
+            return response;
         }
 
         @Override

@@ -13,7 +13,6 @@ import java.util.Properties;
 class Util {
     static String getProperty(String key, Context context) throws IOException {
         Properties properties = new Properties();
-        ;
         AssetManager assetManager = context.getAssets();
         InputStream inputStream = assetManager.open("config.properties");
         properties.load(inputStream);
