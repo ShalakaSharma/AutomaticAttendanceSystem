@@ -58,6 +58,11 @@ public class LoginActivity extends AppCompatActivity {
         startTimePicker = (TimePicker) findViewById(R.id.start_time_picker);
         endTimePicker = (TimePicker) findViewById(R.id.end_time_picker);
 
+        int startHour = startTimePicker.
+
+        int startMin = startTimePicker.getMinute();
+
+
         attemptPermission();
 
         Button submit = (Button) findViewById(R.id.register_button);
