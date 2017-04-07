@@ -2,6 +2,7 @@ package com.example.shalaka.automaticattendancesystem;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -187,6 +188,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean token) {
             Log.i("LoginActivity", token.toString());
+            startService(new Intent(getApplicationContext(), NewService.class));
         }
 
     }
