@@ -36,6 +36,7 @@ public class LoginActivity extends AppCompatActivity {
     private EditText mLastNameView;
     private EditText mstudentIDView;
     private EditText mCourseIDView;
+    private EditText mCourseNameView;
     private EditText mDayOfTheWeekView;
     private TimePicker startTimePicker;
     private TimePicker endTimePicker;
@@ -56,13 +57,10 @@ public class LoginActivity extends AppCompatActivity {
         mLastNameView = (EditText) findViewById(R.id.studentlastname);
         mstudentIDView = (EditText) findViewById(R.id.studentid);
         mCourseIDView = (EditText) findViewById(R.id.courseid);
+        mCourseNameView = (EditText) findViewById(R.id.coursename);
         startTimePicker = (TimePicker) findViewById(R.id.start_time_picker);
         endTimePicker = (TimePicker) findViewById(R.id.end_time_picker);
-
-        int startHour = startTimePicker.
-
-        int startMin = startTimePicker.getMinute();
-
+        mDayOfTheWeekView = (EditText) findViewById(R.id.course_day);
 
         attemptPermission();
 
@@ -71,13 +69,28 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
 
+                String startMin = startTimePicker.getCurrentMinute().toString();
+
+                String startHour = startTimePicker.getCurrentHour().toString();
+
+                String endHour = endTimePicker.getCurrentHour().toString();
+
+                String endMin = endTimePicker.getCurrentMinute().toString();
+
                 attemptRegister(mFirstNameView.getText().toString(),
                         mLastNameView.getText().toString(),
                         mEmailView.getText().toString(),
                         mCourseIDView.getText().toString(),
+                        mCourseNameView.getText().toString(),
                         mstudentIDView.getText().toString(),
                         IMEINumber,
-                        android_id);
+                        android_id,
+                        mDayOfTheWeekView.getText().toString(),
+                        startHour,
+                        startMin,
+                        endHour,
+                        endMin);
+
             }
         });
 
@@ -144,8 +157,10 @@ public class LoginActivity extends AppCompatActivity {
      * @param IMEINumber
      * @param android_id
      */
-    private void attemptRegister(String first_name, String last_name, String email, String course_ID, String student_ID, String IMEINumber, String android_id) {
-        new HttpRequestTask().execute(first_name, last_name, email, course_ID, student_ID, IMEINumber, android_id);
+    private void attemptRegister(String first_name, String last_name, String email, String course_ID, String course_name, String student_ID, String IMEINumber, String android_id, String course_day, String start_hour, String start_min, String end_hour, String end_min) {
+        Log.i(getClass().getSimpleName(), "attemptRegister() called" );
+        Log.i(getClass().getSimpleName(), "course_name" + course_name );
+        new HttpRequestTask().execute(first_name, last_name, email, course_ID ,student_ID, IMEINumber, android_id, course_day, start_hour, start_min, end_hour, end_min, course_name);
 
     }
 
@@ -171,7 +186,14 @@ public class LoginActivity extends AppCompatActivity {
                     .queryParam("Student_ID", params[4])
                     .queryParam("last_name", params[1])
                     .queryParam("email", params[2])
-                    .queryParam("course_ID", params[3]);
+                    .queryParam("course_ID", params[3])
+                    .queryParam("course_day", params[7])
+                    .queryParam("start_hour", params[8])
+                    .queryParam("start_min", params[9])
+                    .queryParam("end_hour", params[10])
+                    .queryParam("end_min", params[11])
+                    .queryParam("course_name", params[12]
+                    );
             RestTemplate restTemplate = new RestTemplate();
             restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
 
