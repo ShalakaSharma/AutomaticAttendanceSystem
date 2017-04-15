@@ -98,7 +98,7 @@ private static Timer timer = new Timer();
 
     @Override
     public void onDestroy() {
-        Log.i("Shalaka","onDestroy Called");
+        Log.i("Background Service","onDestroy Called");
         sendBroadcast(new Intent("YouWillNeverKillMe"));
         super.onDestroy();
     }
