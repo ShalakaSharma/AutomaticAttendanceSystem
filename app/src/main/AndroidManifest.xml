@@ -23,8 +23,19 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <receiver
+        android:name=".MarkAttendanceListener"
+        android:process=":remote" />
+
+        <receiver
+            android:name=".Scheduler"
+            android:process=":remote" />
+
         <service
-            android:name=".NewService" />
+            android:name=".BackgroundService"
+            android:enabled="true"
+            android:exported="true"></service>
     </application>
 
 </manifest>

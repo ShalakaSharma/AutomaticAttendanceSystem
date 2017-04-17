@@ -1,6 +1,9 @@
 package com.example.shalaka.automaticattendancesystem;
 
 import android.Manifest;
+import android.app.ActivityManager;
+import android.app.AlarmManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -25,6 +28,7 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.util.Calendar;
 
 /**
  * A login screen that offers login via email/password.
@@ -50,6 +54,11 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(getClass().getSimpleName(), "onCreate() called");
+
+        //startService(new Intent(getApplicationContext(), BackgroundService.class));
+
+        scheduleStartOfService();
+
         setContentView(R.layout.activity_login);
 
         mEmailView = (EditText) findViewById(R.id.email);
@@ -66,6 +75,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Button submit = (Button) findViewById(R.id.register_button);
         submit.setOnClickListener(new OnClickListener() {
+
             @Override
             public void onClick(View view) {
 
@@ -90,6 +100,8 @@ public class LoginActivity extends AppCompatActivity {
                         startMin,
                         endHour,
                         endMin);
+
+                Log.i("Login isServiceRunning", "" + isMyServiceRunning(BackgroundService.class));
 
             }
         });
@@ -158,10 +170,38 @@ public class LoginActivity extends AppCompatActivity {
      * @param android_id
      */
     private void attemptRegister(String first_name, String last_name, String email, String course_ID, String course_name, String student_ID, String IMEINumber, String android_id, String course_day, String start_hour, String start_min, String end_hour, String end_min) {
-        Log.i(getClass().getSimpleName(), "attemptRegister() called" );
-        Log.i(getClass().getSimpleName(), "course_name" + course_name );
-        new HttpRequestTask().execute(first_name, last_name, email, course_ID ,student_ID, IMEINumber, android_id, course_day, start_hour, start_min, end_hour, end_min, course_name);
+        Log.i(getClass().getSimpleName(), "attemptRegister() called");
+        Log.i(getClass().getSimpleName(), "course_name" + course_name);
+        //new HttpRequestTask().execute(first_name, last_name, email, course_ID ,student_ID, IMEINumber, android_id, course_day, start_hour, start_min, end_hour, end_min, course_name);
 
+    }
+
+    public void scheduleStartOfService() {
+        Log.i(getClass().getSimpleName(), "scheduleStartOfService() called");
+        // Construct an intent that will execute the AlarmReceiver
+        Intent intent = new Intent(getApplicationContext(), Scheduler.class);
+        // Create a PendingIntent to be triggered when the alarm goes off
+        final PendingIntent pIntent = PendingIntent.getBroadcast(this, Scheduler.REQUEST_CODE,
+                intent, PendingIntent.FLAG_UPDATE_CURRENT);
+        // Setup periodic alarm every 5 seconds
+       long firstMillis = System.currentTimeMillis(); // alarm is set right away
+        AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
+        // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
+        // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY
+        alarm.setInexactRepeating(AlarmManager.RTC_WAKEUP, firstMillis,
+                1, pIntent);
+
+    }
+
+    public boolean isMyServiceRunning(Class<?> serviceClass) {
+        Log.i("BackgroundService", "isMyServiceRunning called");
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -210,7 +250,6 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean token) {
             Log.i("LoginActivity", token.toString());
-            startService(new Intent(getApplicationContext(), NewService.class));
         }
 
     }
