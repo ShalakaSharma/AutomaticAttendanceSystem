@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 
-import java.io.IOException;
-
 /**
  * Created by Shalaka on 4/15/2017.
  */

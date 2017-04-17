@@ -28,7 +28,6 @@ import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
-import java.util.Calendar;
 
 /**
  * A login screen that offers login via email/password.
@@ -184,7 +183,7 @@ public class LoginActivity extends AppCompatActivity {
         final PendingIntent pIntent = PendingIntent.getBroadcast(this, Scheduler.REQUEST_CODE,
                 intent, PendingIntent.FLAG_UPDATE_CURRENT);
         // Setup periodic alarm every 5 seconds
-       long firstMillis = System.currentTimeMillis(); // alarm is set right away
+        long firstMillis = System.currentTimeMillis(); // alarm is set right away
         AlarmManager alarm = (AlarmManager) this.getSystemService(Context.ALARM_SERVICE);
         // First parameter is the type: ELAPSED_REALTIME, ELAPSED_REALTIME_WAKEUP, RTC_WAKEUP
         // Interval can be INTERVAL_FIFTEEN_MINUTES, INTERVAL_HALF_HOUR, INTERVAL_HOUR, INTERVAL_DAY

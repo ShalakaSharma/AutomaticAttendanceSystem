@@ -6,51 +6,61 @@ import java.sql.Time;
  * Created by Shalaka on 4/7/2017.
  */
 
+//@JsonIgnoreProperties(ignoreUnknown = true)
 public class Course {
 
-    private String courseName;
-    private String courseId;
-    private Time courseStartTime;
-    private Time courseEndTime;
-    private String courseDay;
+    private int id;
+    private String course_name;
+    private String course_ID;
+    private Time start_time;
+    private Time end_time;
+    private String day;
 
-    public String getCourseName() {
-        return courseName;
+    public String getCourse_name() {
+        return course_name;
     }
 
-    public void setCourseName(String courseName) {
-        this.courseName = courseName;
+    public void setCourse_name(String course_name) {
+        this.course_name = course_name;
     }
 
-    public String getCourseId() {
-        return courseId;
+    public String getCourse_ID() {
+        return course_ID;
     }
 
-    public void setCourseId(String courseId) {
-        this.courseId = courseId;
+    public void setCourse_ID(String course_ID) {
+        this.course_ID = course_ID;
     }
 
-    public Time getCourseStartTime() {
-        return courseStartTime;
+    public Time getStart_time() {
+        return start_time;
     }
 
-    public void setCourseStartTime(Time courseStartTime) {
-        this.courseStartTime = courseStartTime;
+    public void setStart_time(Time start_time) {
+        this.start_time = start_time;
     }
 
-    public Time getCourseEndTime() {
-        return courseEndTime;
+    public Time getEnd_time() {
+        return end_time;
     }
 
-    public void setCourseEndTime(Time courseEndTime) {
-        this.courseEndTime = courseEndTime;
+    public void setEnd_time(Time end_time) {
+        this.end_time = end_time;
     }
 
-    public String getCourseDay() {
-        return courseDay;
+    public String getDay() {
+        return day;
     }
 
-    public void setCourseDay(String courseDay) {
-        this.courseDay = courseDay;
+    public void setDay(String day) {
+        this.day = day;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 }

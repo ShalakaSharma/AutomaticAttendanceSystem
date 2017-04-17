@@ -25,8 +25,8 @@
         </activity>
 
         <receiver
-        android:name=".MarkAttendanceListener"
-        android:process=":remote" />
+            android:name=".MarkAttendanceListener"
+            android:process=":remote" />
 
         <receiver
             android:name=".Scheduler"
