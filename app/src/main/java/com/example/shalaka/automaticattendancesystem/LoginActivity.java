@@ -166,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptRegister(String first_name, String last_name, String email, String course_ID, String course_name, String student_ID, String IMEINumber, String android_id, String course_day, String start_hour, String start_min, String end_hour, String end_min) {
         Log.i(getClass().getSimpleName(), "attemptRegister() called");
         Log.i(getClass().getSimpleName(), "course_name" + course_name);
-        new HttpRequestTask().execute(first_name, last_name, email, course_ID ,student_ID, IMEINumber, android_id, course_day, start_hour, start_min, end_hour, end_min, course_name);
+        new HttpRequestStudent().execute(first_name, last_name, email, course_ID ,student_ID, IMEINumber, android_id, course_day, start_hour, start_min, end_hour, end_min, course_name);
 
     }
 
@@ -202,7 +202,7 @@ public class LoginActivity extends AppCompatActivity {
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
      */
-    private class HttpRequestTask extends AsyncTask<String, Object, Boolean> {
+    private class HttpRequestStudent extends AsyncTask<String, Object, Boolean> {
         @Override
         protected Boolean doInBackground(String... params) {
             boolean response = false;
@@ -235,7 +235,7 @@ public class LoginActivity extends AppCompatActivity {
                 response = restTemplate.getForObject(
                         builder.build().encode().toUri(),
                         Boolean.class);
-            } catch (RestClientException e) {
+            } catch (Exception e) {
                 Log.e("MainActivity", e.getMessage(), e);
             }
             return response;
@@ -244,7 +244,59 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean token) {
             Log.i("LoginActivity", token.toString());
+            if(token) {
+                new HttpRequestCourse().execute(IMEINumber);
+            }
             scheduleStartOfService();
+        }
+
+    }
+
+    private class HttpRequestCourse extends AsyncTask<String, Object, Course[]> {
+        @Override
+        protected Course[] doInBackground(String... params) {
+            Course[] response = null;
+            String url = null;
+            try {
+                url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/studentCourses";
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                    .queryParam("IMEI", params[0]);
+            RestTemplate restTemplate = new RestTemplate();
+            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
+
+            try {
+                response = restTemplate.getForObject(
+                        builder.build().encode().toUri(),
+                        Course[].class);
+            } catch (Exception e) {
+                Log.e("LoginActivity", e.getMessage(), e);
+            }
+            return response;
+        }
+
+        @Override
+        protected void onPostExecute(Course[] response) {
+            Log.i("BackgroundService", "onPostExecute() for fetching course details");
+            Log.i("BackgroundService", "Course Details received");
+            Log.i("BackgroundService", "" + response);
+            if (response != null) {
+
+                for (Course c : response) {
+                    Log.i("BackgroundService", " " + c.getId() + c.getDay() + c.getCourse_ID() + c.getCourse_name());
+                    Scheduler.scheduleAttendanceService(getApplicationContext(), response);
+                }
+                ///calling service between start and end times
+
+                //    for(int i = 0;i<response.length;i++){
+                //get time
+                //    }
+            } else {
+                Log.i("BackgroundService", "response is null");
+            }
         }
 
     }

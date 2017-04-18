@@ -29,7 +29,6 @@ public class BackgroundService extends Service {
         // Let it continue running until it is stopped.
         Log.i(getClass().getSimpleName(), "onStartCommand() called");
         Toast.makeText(this, "Service Started", Toast.LENGTH_LONG).show();
-        new HttpRequestTask().execute("a");
         return START_STICKY;
     }
 
@@ -44,55 +43,6 @@ public class BackgroundService extends Service {
         super.onDestroy();
         Log.i(getClass().getSimpleName(), "onDestroy() called");
         Toast.makeText(this, "Service Destroyed", Toast.LENGTH_LONG).show();
-
-    }
-
-    private class HttpRequestTask extends AsyncTask<String, Object, Course[]> {
-        @Override
-        protected Course[] doInBackground(String... params) {
-            Course[] response = null;
-            String url = null;
-            try {
-                url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/studentCourses";
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                    .queryParam("ID", params[0]);
-            RestTemplate restTemplate = new RestTemplate();
-            restTemplate.getMessageConverters().add(new MappingJackson2HttpMessageConverter());
-
-            try {
-                response = restTemplate.getForObject(
-                        builder.build().encode().toUri(),
-                        Course[].class);
-            } catch (Exception e) {
-                Log.e("LoginActivity", e.getMessage(), e);
-            }
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(Course[] response) {
-            Log.i("BackgroundService", "onPostExecute() for fetching course details");
-            Log.i("BackgroundService", "Course Details received");
-            Log.i("BackgroundService", "" + response);
-            if (response != null) {
-
-                for (Course c : response) {
-                    Log.i("BackgroundService", " " + c.getId() + c.getDay() + c.getCourse_ID() + c.getCourse_name());
-                    Scheduler.scheduleAttendanceService(getApplicationContext(), response);
-                }
-                ///calling service between start and end times
-
-                //    for(int i = 0;i<response.length;i++){
-                //get time
-                //    }
-            } else {
-                Log.i("BackgroundService", "response is null");
-            }
-        }
 
     }
 }
