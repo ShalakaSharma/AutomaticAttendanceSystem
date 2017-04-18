@@ -19,7 +19,7 @@ public class Scheduler extends BroadcastReceiver {
     public static final String ACTION = "com.codepath.example.servicesdemo.alarm";
     static boolean isScheduled = false;
 
-    public static void scheduleAttendanceService(Context context, Intent intent) {
+    public static void scheduleAttendanceService(Context context, Course[] course) {
 
         if (isScheduled) {
             return;
@@ -36,13 +36,20 @@ public class Scheduler extends BroadcastReceiver {
 
         Calendar calendar = Calendar.getInstance();
 
-        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.HOUR_OF_DAY, course[0].getStart_time().getHours());
 
-        calendar.set(Calendar.MINUTE, 2);
+        calendar.set(Calendar.MINUTE,  course[0].getStart_time().getMinutes());
 
         calendar.set(Calendar.SECOND, 0);
 
-        calendar.set(Calendar.DAY_OF_WEEK, Calendar.SATURDAY);
+        calendar.set(Calendar.DAY_OF_WEEK, getDay(course[0].getDay()));
+        /*calendar.set(Calendar.Y, 17);
+
+        calendar.set(Calendar.MINUTE,  35);
+
+        calendar.set(Calendar.SECOND, 0);
+
+        calendar.set(Calendar.DAY_OF_WEEK, getDay("Tuesday"));*/
 
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
@@ -61,11 +68,6 @@ public class Scheduler extends BroadcastReceiver {
             Intent i = new Intent(context, BackgroundService.class);
             context.startService(i);
         }
-
-
-        scheduleAttendanceService(context, intent);
-
-
     }
 
     public boolean isMyServiceRunning(Class<?> serviceClass, Context context) {
@@ -77,5 +79,27 @@ public class Scheduler extends BroadcastReceiver {
             }
         }
         return false;
+    }
+
+    private static int getDay(String day) {
+        switch(day) {
+            case "Sunday": {
+                return Calendar.SUNDAY;
+            } case "Monday": {
+                return Calendar.MONDAY;
+            } case "Tuesday": {
+                return Calendar.TUESDAY;
+            } case "Wednesday": {
+                return Calendar.WEDNESDAY;
+            } case "Thursday": {
+                return Calendar.THURSDAY;
+            } case "Friday": {
+                return Calendar.FRIDAY;
+            } case "Saturday": {
+                return Calendar.SATURDAY;
+            } default: {
+                return Calendar.MONDAY;
+            }
+        }
     }
 }

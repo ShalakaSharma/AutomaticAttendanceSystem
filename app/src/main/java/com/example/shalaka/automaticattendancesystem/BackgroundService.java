@@ -67,7 +67,7 @@ public class BackgroundService extends Service {
                 response = restTemplate.getForObject(
                         builder.build().encode().toUri(),
                         Course[].class);
-            } catch (RestClientException e) {
+            } catch (Exception e) {
                 Log.e("LoginActivity", e.getMessage(), e);
             }
             return response;
@@ -75,14 +75,23 @@ public class BackgroundService extends Service {
 
         @Override
         protected void onPostExecute(Course[] response) {
-            for (Course c : response)
-                Log.i("BackgroundService", " " + c.getId() + c.getDay() + c.getCourse_ID() + c.getCourse_name());
+            Log.i("BackgroundService", "onPostExecute() for fetching course details");
+            Log.i("BackgroundService", "Course Details received");
+            Log.i("BackgroundService", "" + response);
+            if (response != null) {
 
-            ///calling service between start and end times
+                for (Course c : response) {
+                    Log.i("BackgroundService", " " + c.getId() + c.getDay() + c.getCourse_ID() + c.getCourse_name());
+                    Scheduler.scheduleAttendanceService(getApplicationContext(), response);
+                }
+                ///calling service between start and end times
 
-            //    for(int i = 0;i<response.length;i++){
-            //get time
-            //    }
+                //    for(int i = 0;i<response.length;i++){
+                //get time
+                //    }
+            } else {
+                Log.i("BackgroundService", "response is null");
+            }
         }
 
     }

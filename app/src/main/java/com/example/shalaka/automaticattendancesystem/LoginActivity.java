@@ -53,11 +53,6 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         Log.i(getClass().getSimpleName(), "onCreate() called");
-
-        //startService(new Intent(getApplicationContext(), BackgroundService.class));
-
-        scheduleStartOfService();
-
         setContentView(R.layout.activity_login);
 
         mEmailView = (EditText) findViewById(R.id.email);
@@ -171,7 +166,7 @@ public class LoginActivity extends AppCompatActivity {
     private void attemptRegister(String first_name, String last_name, String email, String course_ID, String course_name, String student_ID, String IMEINumber, String android_id, String course_day, String start_hour, String start_min, String end_hour, String end_min) {
         Log.i(getClass().getSimpleName(), "attemptRegister() called");
         Log.i(getClass().getSimpleName(), "course_name" + course_name);
-        //new HttpRequestTask().execute(first_name, last_name, email, course_ID ,student_ID, IMEINumber, android_id, course_day, start_hour, start_min, end_hour, end_min, course_name);
+        new HttpRequestTask().execute(first_name, last_name, email, course_ID ,student_ID, IMEINumber, android_id, course_day, start_hour, start_min, end_hour, end_min, course_name);
 
     }
 
@@ -213,7 +208,7 @@ public class LoginActivity extends AppCompatActivity {
             boolean response = false;
             String url = null;
             try {
-                url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/add";
+                url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/addRecord";
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -249,6 +244,7 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Boolean token) {
             Log.i("LoginActivity", token.toString());
+            scheduleStartOfService();
         }
 
     }

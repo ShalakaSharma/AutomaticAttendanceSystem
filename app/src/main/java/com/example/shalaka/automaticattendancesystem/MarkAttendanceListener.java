@@ -19,5 +19,7 @@ public class MarkAttendanceListener extends BroadcastReceiver {
 
         Log.i("LoginActivity:", "onReceive() for MarkAttendanceListener called");
 
+
+
     }
 }
