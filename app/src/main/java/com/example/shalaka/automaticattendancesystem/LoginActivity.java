@@ -245,20 +245,20 @@ public class LoginActivity extends AppCompatActivity {
         protected void onPostExecute(Boolean token) {
             Log.i("LoginActivity", token.toString());
             if(token) {
-                new HttpRequestCourse().execute(IMEINumber);
+                new HttpRequestStudentDetails().execute(IMEINumber);
             }
             scheduleStartOfService();
         }
 
     }
 
-    private class HttpRequestCourse extends AsyncTask<String, Object, Course[]> {
+    private class HttpRequestStudentDetails extends AsyncTask<String, Object, Student> {
         @Override
-        protected Course[] doInBackground(String... params) {
-            Course[] response = null;
+        protected Student doInBackground(String... params) {
+            Student response = null;
             String url = null;
             try {
-                url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/studentCourses";
+                url = "http://" + Util.getProperty("Server_IP", getApplicationContext()) + ":8080/access/studentDetails";
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -271,7 +271,7 @@ public class LoginActivity extends AppCompatActivity {
             try {
                 response = restTemplate.getForObject(
                         builder.build().encode().toUri(),
-                        Course[].class);
+                        Student.class);
             } catch (Exception e) {
                 Log.e("LoginActivity", e.getMessage(), e);
             }
@@ -279,16 +279,21 @@ public class LoginActivity extends AppCompatActivity {
         }
 
         @Override
-        protected void onPostExecute(Course[] response) {
+        protected void onPostExecute(Student student) {
             Log.i("BackgroundService", "onPostExecute() for fetching course details");
             Log.i("BackgroundService", "Course Details received");
-            Log.i("BackgroundService", "" + response);
-            if (response != null) {
+            Log.i("BackgroundService", "" + student);
+            if (student != null) {
 
-                for (Course c : response) {
-                    Log.i("BackgroundService", " " + c.getId() + c.getDay() + c.getCourse_ID() + c.getCourse_name());
-                    Scheduler.scheduleAttendanceService(getApplicationContext(), response);
-                }
+
+                    Log.i("BackgroundService", " " + student.getId() + student.getFirst_name());
+                    Course[] course = new Course[1];
+                    course[0] = student.getCourse();
+                    MyApplication.course = student.getCourse();
+                    MyApplication.student = student;
+                    Scheduler.scheduleAttendanceService(getApplicationContext(), course);
+
+
                 ///calling service between start and end times
 
                 //    for(int i = 0;i<response.length;i++){

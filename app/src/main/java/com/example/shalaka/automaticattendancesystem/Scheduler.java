@@ -36,24 +36,25 @@ public class Scheduler extends BroadcastReceiver {
 
         Calendar calendar = Calendar.getInstance();
 
-        /*calendar.set(Calendar.HOUR_OF_DAY, course[0].getStart_time().getHours());
+        calendar.set(Calendar.HOUR_OF_DAY, course[0].getStart_time().getHours());
 
         calendar.set(Calendar.MINUTE,  course[0].getStart_time().getMinutes());
 
         calendar.set(Calendar.SECOND, 0);
 
         calendar.set(Calendar.DAY_OF_WEEK, getDay(course[0].getDay()));
-        */
-        calendar.set(Calendar.HOUR_OF_DAY, 22);
+
+     /*   calendar.set(Calendar.HOUR_OF_DAY, 22);
 
         calendar.set(Calendar.MINUTE, 17);
 
         calendar.set(Calendar.SECOND, 0);
 
-        calendar.set(Calendar.DAY_OF_WEEK, getDay("Thursday"));
+        calendar.set(Calendar.DAY_OF_WEEK, getDay("Thursday"));*/
 
         AlarmManager alarm = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         alarm.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pIntent);
+        MarkAttendanceListener.course = course[0];
         // ((AlarmManager) getSystemService(ALARM_SERVICE)).set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
     }
 
